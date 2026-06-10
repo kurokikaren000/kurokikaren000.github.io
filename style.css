@@ -345,3 +345,251 @@ a:focus-visible,.btn:focus-visible{
   .ql-label{font-size:10px}
   .card{padding:16px 44px 16px 15px}
 }
+
+
+/* =====================================================
+   追加演出：軽量アニメーション・開閉・現在地表示
+   ===================================================== */
+
+/* スクロール表示。JS有効時のみ初期状態を隠す */
+.js .reveal-item{
+  opacity:0;
+  transform:translateY(22px);
+  transition:
+    opacity .72s cubic-bezier(.2,.7,.2,1),
+    transform .72s cubic-bezier(.2,.7,.2,1);
+  transition-delay:var(--reveal-delay,0ms);
+}
+.js .reveal-item.is-revealed{
+  opacity:1;
+  transform:none;
+}
+
+/* プロフィールは少し華やかに */
+.profile{
+  position:relative;
+  isolation:isolate;
+}
+.profile::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:290px;
+  height:290px;
+  left:50%;
+  top:18px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(203,167,91,.13),transparent 68%);
+  filter:blur(8px);
+  pointer-events:none;
+  animation:profileGlow 5.5s ease-in-out infinite;
+}
+.avatar{
+  position:relative;
+  transition:transform .35s ease,box-shadow .35s ease;
+}
+.avatar::before{
+  content:"";
+  position:absolute;
+  inset:-8px;
+  border:1px solid rgba(231,216,176,.22);
+  border-radius:30px;
+  pointer-events:none;
+  animation:avatarRing 7s linear infinite;
+}
+.avatar:hover{
+  transform:translateY(-4px) rotate(.4deg);
+  box-shadow:
+    0 18px 48px rgba(0,0,0,.58),
+    0 0 28px rgba(203,167,91,.2);
+}
+@keyframes profileGlow{
+  0%,100%{opacity:.55;transform:translateX(-50%) scale(.94)}
+  50%{opacity:1;transform:translateX(-50%) scale(1.06)}
+}
+@keyframes avatarRing{
+  0%{transform:rotate(0deg);opacity:.35}
+  50%{opacity:.8}
+  100%{transform:rotate(360deg);opacity:.35}
+}
+
+/* ナビの現在地 */
+.topnav a{
+  position:relative;
+}
+.topnav a::after{
+  content:"";
+  position:absolute;
+  left:14px;
+  right:14px;
+  bottom:7px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  transform:scaleX(0);
+  transition:transform .25s ease;
+}
+.topnav a.is-active{
+  color:var(--gold-lt);
+}
+.topnav a.is-active::after{
+  transform:scaleX(1);
+}
+
+/* カードの光沢と立体感 */
+.card,.support-card,.btn{
+  position:relative;
+  overflow:hidden;
+}
+.card::before,.support-card::before,.btn::before{
+  content:"";
+  position:absolute;
+  top:-120%;
+  left:-55%;
+  width:42%;
+  height:320%;
+  background:linear-gradient(
+    90deg,
+    transparent,
+    rgba(255,255,255,.11),
+    transparent
+  );
+  transform:rotate(18deg);
+  transition:left .7s ease;
+  pointer-events:none;
+}
+.card:hover::before,.support-card:hover::before,.btn:hover::before{
+  left:125%;
+}
+.card:hover{
+  box-shadow:
+    0 14px 34px rgba(0,0,0,.44),
+    0 0 0 1px rgba(203,167,91,.08) inset;
+}
+
+/* セクション見出しの飾り */
+.sec-title .en{
+  position:relative;
+  display:inline-block;
+}
+.sec-title .en::before,
+.sec-title .en::after{
+  content:"";
+  position:absolute;
+  top:50%;
+  width:28px;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold));
+  opacity:.55;
+}
+.sec-title .en::before{
+  right:calc(100% + 13px);
+}
+.sec-title .en::after{
+  left:calc(100% + 13px);
+  transform:scaleX(-1);
+}
+
+/* 開閉パネル */
+.panel.is-accordion{
+  padding:0;
+  overflow:hidden;
+}
+.accordion-trigger{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:inherit;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:19px 20px;
+  text-align:left;
+  cursor:pointer;
+  font:inherit;
+}
+.accordion-trigger .panel-h{
+  flex:1;
+  margin:0;
+  padding:0;
+  border:0;
+}
+.accordion-icon{
+  flex:0 0 30px;
+  width:30px;
+  height:30px;
+  display:grid;
+  place-items:center;
+  border:1px solid var(--gold-line);
+  border-radius:50%;
+  color:var(--gold);
+  transition:transform .28s ease,background .28s ease;
+}
+.accordion-trigger[aria-expanded="true"] .accordion-icon{
+  transform:rotate(45deg);
+  background:rgba(203,167,91,.1);
+}
+.accordion-content{
+  display:grid;
+  grid-template-rows:0fr;
+  opacity:.35;
+  transition:grid-template-rows .4s ease,opacity .3s ease;
+}
+.accordion-content > .accordion-inner{
+  min-height:0;
+  overflow:hidden;
+}
+.accordion-trigger[aria-expanded="true"] + .accordion-content{
+  grid-template-rows:1fr;
+  opacity:1;
+}
+.accordion-inner{
+  padding:0 20px 20px;
+  border-top:1px solid var(--gold-line);
+}
+.accordion-inner > :first-child{
+  margin-top:16px;
+}
+
+/* クリック・タップ時の自然な反応 */
+.card:active,.support-card:active,.btn:active{
+  transform:translateY(0) scale(.985);
+}
+
+/* スクロールバーをサイト色に */
+*{
+  scrollbar-width:thin;
+  scrollbar-color:rgba(203,167,91,.55) rgba(255,255,255,.03);
+}
+*::-webkit-scrollbar{width:9px;height:9px}
+*::-webkit-scrollbar-track{background:rgba(255,255,255,.03)}
+*::-webkit-scrollbar-thumb{
+  background:linear-gradient(var(--gold),#80652d);
+  border-radius:999px;
+  border:2px solid var(--bg);
+}
+
+/* スマホではホバー系の動きを控えめに */
+@media (hover:none){
+  .card:hover,.support-card:hover,.btn:hover,.avatar:hover{
+    transform:none;
+  }
+  .card::before,.support-card::before,.btn::before{
+    display:none;
+  }
+}
+
+/* 動きを減らす設定を尊重 */
+@media (prefers-reduced-motion:reduce){
+  .profile::before,.avatar::before{
+    animation:none !important;
+  }
+  .js .reveal-item{
+    opacity:1;
+    transform:none;
+  }
+  .accordion-content{
+    transition:none;
+  }
+}
